@@ -1,0 +1,129 @@
+.profile {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left:20%;
+}
+
+.profile h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.profile form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.profile button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+/* UserProfile.css */
+
+/* Container styles */
+.user-profile {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.user-profile h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form styles */
+.user-profile form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-profile input,
+.user-profile select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.user-profile button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 30px;
+}
+
+.user-profile button:hover {
+  background-color: #a5b2bf;
+}
+
+/* Section styles */
+.user-profile .section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-profile .section h4 {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.user-profile .section input,
+.user-profile .section select {
+  width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+.profile {
+    padding: 15px;
+      margin-left:40%;
+
+  }
+
+  .user-profile form {
+    gap: 15px;
+  }
+
+  .user-profile input,
+  .user-profile select {
+    font-size: 14px;
+  }
+
+  .user-profile button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+.profile button:hover {
+  background-color: #0056b3;
+}
+
+.profile input[type="file"] {
+  margin-bottom: 20px;
+}

@@ -1,0 +1,29 @@
+.job-applications {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.job-applications h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.job-applications ul {
+  list-style: none;
+  padding: 0;
+}
+
+.job-applications li {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.job-applications li:last-child {
+  border-bottom: none;
+}
+
+.job-applications p {
+  margin: 5px 0;
+}

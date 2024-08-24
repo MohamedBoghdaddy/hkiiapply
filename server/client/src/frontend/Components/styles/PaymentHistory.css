@@ -1,0 +1,59 @@
+.payment-history {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left: 25%;
+}
+
+.payment-history h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters input {
+  margin-right: 10px;
+  padding: 10px;
+  border: 1px solid #060404;
+  border-radius: 4px;
+}
+
+.filters button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #150a0a;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  color:#131517;
+  background-color: #b1b9c1;
+}
+
+@media (max-width: 768px) {
+  .payment-history {
+    padding: 15px;
+    margin-left: 33%;
+  }
+}

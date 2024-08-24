@@ -1,0 +1,18 @@
+body {
+  background-color: #F5F5F5;
+  color: #333333;
+}
+
+header {
+  background-color: #2C3E50;
+  color: #FFFFFF;
+}
+
+button {
+  background-color: #E74C3C;
+  color: #FFFFFF;
+}
+
+.highlight {
+  color: #F1C40F;
+}

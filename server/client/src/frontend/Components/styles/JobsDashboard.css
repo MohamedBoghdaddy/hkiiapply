@@ -1,0 +1,134 @@
+.jobs-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.apply-to-jobs {
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  margin-top: 10%;
+}
+
+.apply-to-jobs h1 {
+  font-size: 28px;
+  color: #343a40;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.apply-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.apply-button:hover {
+  background-color: #0056b3;
+}
+
+.apply-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.loading .apply-button {
+  background-color: #6c757d;
+}
+
+.application-response {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.application-response h3 {
+  font-size: 24px;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.application-response p {
+  font-size: 16px;
+  color: #495057;
+  margin: 5px 0;
+}
+
+.application-response strong {
+  color: #212529;
+}
+
+.job-history {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left: 17%;
+  margin-top: 40px;
+}
+
+.job-history h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters input {
+  margin-right: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.filters button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .apply-to-jobs {
+    margin-left: 30%;
+    max-width: 500px;
+    margin-top: 25%;
+  }
+
+  .job-history {
+    padding: 15px;
+    margin-left: 32%;
+  }
+}

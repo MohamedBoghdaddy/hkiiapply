@@ -1,0 +1,52 @@
+.navbar {
+  display: flex; /* Flexbox for navbar links */
+  flex-grow: 1; /* Allow the navbar to grow */
+  position: fixed; /* Fix the navbar at the top */
+  top: 0; /* Position at the top of the viewport */
+  width: 100%; /* Ensure it spans the full width */
+  height: 70px; /* Adjust the height to a smaller size */
+  background-color: #323c43; /* Dark background */
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.navbar .navbar-nav {
+
+  justify-content: flex-end; /* Space links evenly */
+}
+
+.navbar .nav-link {
+  color: #ada8a8; /* Light text color */
+}
+.nav-link:hover {
+  color: #faf8f8;
+}
+.navbar .navbar-toggler {
+  background-color: #303132; /* Dark toggle button */
+  border: none;
+}
+
+
+
+@media only screen and (max-width: 1800px) {
+  /* Adjustments for screens up to 1800px in width */
+  .nav-link {
+    font-size: 1.8rem !important;
+    margin-left: 15px;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  /* Adjustments for screens up to 1200px in width */
+  .nav-link {
+    font-size: 1.5rem !important;
+    margin-left: 10px;
+  }
+}
+
+@media only screen and (max-width: 766px) {
+  /* Adjustments for screens up to 766px in width */
+  .nav-link {
+    font-size: 1.2rem !important;
+    margin-left: 5px;
+  }
+}

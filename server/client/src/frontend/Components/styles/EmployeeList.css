@@ -1,0 +1,245 @@
+.employeesList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5%;
+  margin-left: 20%;
+  max-width: 60%;
+}
+
+.listheader {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  margin-left: 1.7rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-family: "Beverly";
+}
+/* Style for the add employee button */
+.back,
+.addbutton {
+  background-color: green;
+  color: whitesmoke;
+  font-size: 20px;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+.back,
+.addbutton:hover {
+  background-color: darkgreen;
+}
+
+/* Style for the action buttons (delete and update) */
+.action-button {
+  background-color: green;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+  gap: 4px;
+}
+
+.action-button:hover {
+  background-color: darkgreen;
+}
+
+/* Style for the form buttons (add and update) */
+.button {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.button:hover {
+  background-color: darkgreen;
+}
+.action {
+  display: flex;
+  gap: 7px;
+}
+
+.employeetable,
+.listcontainercus {
+  width: 100%;
+  min-width: 100%; /* Ensures the container is at least as wide as its parent */
+  margin-top: 1rem;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-x: auto; /* Allows horizontal scrolling if there's overflow */
+  overflow-y: auto; /* Hides vertical overflow */
+}
+
+.employeetable table,
+.listcontainercus table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employeetable th,
+.employeetable td,
+.listcontainercus th,
+.listcontainercus td {
+  padding: 8px;
+  color: #000;
+}
+
+.employeetable th,
+.listcontainercus th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.employeetable tr:hover td,
+.listcontainercus tr:hover td {
+  background-color: #e9ecef;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nameee {
+  font-size: 20px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .employeesList {
+    padding: 15px;
+    margin-left: 25%;
+  }
+
+  .listheader {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0rem;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+  .listheader {
+    font-size: 40px;
+    align-items: center;
+  }
+  .h2 {
+    margin-left: 80px;
+  }
+  .addbutton {
+    font-size: 9px;
+    padding: 8px;
+    border-radius: 15px;
+  }
+
+  .employeetable {
+    margin-top: 2rem;
+    width: 400px;
+    margin-left: 110px;
+  }
+  .listcontainercus {
+    margin-right: 50000px;
+    left: 0;
+    margin-left: 0;
+  }
+
+  .employeetable table,
+  .listcontainercus table {
+    width: 15px;
+    font-size: 0.3rem;
+    font-size: 7px;
+  }
+
+  .employeetable th,
+  .employeetable td {
+    padding: 0.2rem;
+  }
+  .action-button {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    gap: 4px; /* Reduce the gap between buttons */
+  }
+
+  .action-button {
+    padding: 5px 8px; /* Adjust padding of buttons */
+    font-size: 6px; /* Adjust font size of buttons */
+  }
+
+  .details img {
+    width: 40px;
+  }
+  .employeetable.nameeee,
+  .emailllll {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .back {
+    font-size: 8px;
+  }
+  .h2 {
+    font-size: 20px;
+    align-items: center;
+    left: 0;
+  }
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px; /* Reduced padding */
+  background-color: #8b4513; /* Brown color */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  color: #fff; /* White text color */
+}
+
+.employee-form {
+  margin-left: 0px;
+  left: 0;
+  width: 100%;
+  max-width: 500px;
+  background-color: #f0f0f0;
+  padding: 15px; /* Reduced padding */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  margin-bottom: 10px; /* Reduced margin-bottom */
+  width: 100%;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 3px; /* Reduced margin-bottom */
+  color: #000; /* Black text color for input labels */
+}
+
+.input-group input {
+  width: 100%;
+  padding: 5px; /* Reduced padding */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-group button {
+  width: 100%;
+  padding: 8px; /* Reduced padding */
+  background-color: green;
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

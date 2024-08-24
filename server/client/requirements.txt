@@ -1,0 +1,11 @@
+Flask
+textract
+python-docx
+pdfminer.six
+natural
+scikit-learn
+requests
+python-dateutil
+marshmallow
+python-dotenv
+six

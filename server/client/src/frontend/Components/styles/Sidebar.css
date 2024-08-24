@@ -1,0 +1,94 @@
+.sidebar {
+  position: sticky;
+  margin-top: 68px;
+  bottom: 0;
+  height: 100vh;
+  left: 0;
+  width: 20px;
+  background-color: #2f4050;
+  color: #fff;
+  overflow: hidden;
+  transition: 1s;
+}
+
+.sidebar:hover {
+  width: 230px;
+  transition: 1s;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  font-size: 20px;
+}
+
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 10px 20px;
+}
+
+.sidebar ul li a {
+  color: #adb5bd;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  background-color: #495057;
+  color: #fff;
+}
+
+.sidebar ul li a .icon {
+  margin-right: 10px;
+}
+
+.sidebar .logout {
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #dc3545;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .logout:hover {
+  background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar ul li a {
+    padding: 8px 15px;
+  }
+
+  .sidebar .logout {
+    padding: 8px 15px;
+  }
+}
+
+/* Add smooth transitions */
+.account-settings,
+.job-applications,
+.job-history,
+.payment-history,
+.profile {
+  transition: all 0.3s ease;
+}
+

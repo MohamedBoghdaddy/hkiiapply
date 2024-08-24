@@ -1,0 +1,70 @@
+.apply-to-jobs {
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  margin-top: 10%;
+}
+
+.apply-to-jobs h1 {
+  font-size: 28px;
+  color: #343a40;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.apply-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.apply-button:hover {
+  background-color: #0056b3;
+}
+
+.apply-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.loading .apply-button {
+  background-color: #6c757d;
+}
+
+.application-response {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.application-response h3 {
+  font-size: 24px;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.application-response p {
+  font-size: 16px;
+  color: #495057;
+  margin: 5px 0;
+}
+
+.application-response strong {
+  color: #212529;
+}
+
+@media (max-width: 768px) {
+  .apply-to-jobs {
+    margin-left: 30%;
+    max-width: 500px;
+    margin-top: 25%;
+  }
+}
