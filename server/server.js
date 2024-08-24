@@ -14,6 +14,12 @@ import analyticRoutes from "./routes/analyticRoutes.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
 import User from "./models/UserModel.js";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
+
+//resolving dirname for es module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -48,7 +54,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-     origin: ["http://localhost:3000",/* "https://iapplyhki.vercel.app"*/],
+    origin: ["http://localhost:3000" /* "https://iapplyhki.vercel.app"*/],
     credentials: true,
   })
 );
@@ -134,5 +140,17 @@ app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
 app.use("../netlify/functions/api.js", router);
-// Export the express app for serverless deployment
+
+// to use the client app
+app.use(express.static(path.join(__dirname, "./client/build")));
+
+//render client for any path
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "./client/build/index.html"))
+);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
 export default app;
