@@ -52,7 +52,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm install --prefix ./client && npm run build --prefix ./client && npm install",
     "netlify": "npm run build && netlify deploy --dir=build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
