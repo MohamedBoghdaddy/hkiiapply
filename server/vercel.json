@@ -8,13 +8,8 @@
     },
     {
       "src": "/(.*)",
-      "dest": "src/frontend/build/$1"
+      "dest": "server/client/build/$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "MONGO_URL": "@mongo-url",
-    "JWT_SECRET": "@jwt-secret",
-    "ANTHROPICS_API_KEY": "@anthropics-api-key"
-  }
+  ]
+  
 }

@@ -1,6 +1,6 @@
 [build]
 functions = "netlify/functions"
-command = "npm run build"  # if you have a frontend build process
+command = "server/client/npm run build"  # if you have a frontend build process
 
 [functions]
 node_bundler = "esbuild"  # Or "webpack" depending on your setup
