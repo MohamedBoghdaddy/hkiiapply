@@ -6,6 +6,8 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import Profile from "../models/ProfileModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 dotenv.config();
 
@@ -38,12 +40,22 @@ export const register = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword, role });
+    const uid = uuidv4(); // Generate a unique UID
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+      role,
+      UID: uid,
+    });
     await user.save();
+
+    const profile = new Profile({ userId: user._id, UID: uid });
+    await profile.save();
 
     const token = createToken(user);
 
-    res.status(201).json({ token, user: { username, email, role } });
+    res.status(201).json({ token, user: { username, email, role, UID: uid } });
   } catch (error) {
     res.status(500).json({ message: "Registration failed", error });
   }
@@ -149,7 +161,7 @@ export const updateUser = async (req, res) => {
       .status(200)
       .json({ msg: "User updated successfully", user: updatedUser });
   } catch (error) {
-    console.error("Error updating user:", error); 
+    console.error("Error updating user:", error);
     res.status(500).json({ error: error.message });
   }
 };

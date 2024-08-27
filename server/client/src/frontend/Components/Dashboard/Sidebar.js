@@ -5,8 +5,7 @@ import "../styles/Sidebar.css";
 import { useAuthContext } from "../../../context/AuthContext";
 
 const Sidebar = () => {
-    const { state } = useAuthContext();
-
+  const { state } = useAuthContext();
   const { user, isAuthenticated } = state;
 
   console.log("Authenticated:", isAuthenticated);
@@ -18,10 +17,17 @@ const Sidebar = () => {
         <h2>
           {isAuthenticated && user ? `Welcome, ${user.username}` : "Guest"}
         </h2>
+        {isAuthenticated && user && user.photoUrl && (
+          <img
+            src={`http://localhost:4000${user.photoUrl}`} // Adjust based on your backend setup
+            alt="Profile"
+            className="sidebar-profile-pic"
+          />
+        )}
       </div>
       <ul className="sidebar-menu">
         <li>
-          <Link to="/dashboard">
+          <Link to="/Dashboard">
             <FaUser /> Dashboard
           </Link>
         </li>

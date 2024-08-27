@@ -1,16 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import { DashboardContext } from "./context/DashboardContext";
-
+import { useAuthContext } from "./context/AuthContext"; // Import the AuthContext
 import "../styles/JobApplication.css";
 
 const JobApplications = () => {
   const { appliedJobs, fetchAppliedJobs } = useContext(DashboardContext);
+  const { state } = useAuthContext(); // Get the auth state
 
   useEffect(() => {
-    const userId = "some-user-id"; // Replace with actual user ID
-    fetchAppliedJobs(userId);
-  }, [fetchAppliedJobs]);
-
+    if (state.user && state.user.id) {
+      fetchAppliedJobs(state.user.id); // Use the logged-in userId
+    }
+  }, [fetchAppliedJobs, state.user]);
 
   return (
     <div className="job-applications">

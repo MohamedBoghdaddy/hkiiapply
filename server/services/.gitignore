@@ -1,0 +1,25 @@
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# Ignore specific file
+src/api/test.py
+
+# Ignore all .env files
+server/.env
+
+.env
+services/textract
+.vercel

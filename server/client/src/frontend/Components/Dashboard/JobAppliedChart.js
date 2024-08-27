@@ -1,27 +1,26 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
+import { DashboardContext } from "./context/DashboardContext";
+import { useAuthContext } from "./context/AuthContext"; // Import the AuthContext
 import "../styles/JobAppliedChart.css";
 
-// Register necessary components for ChartJS
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
+const JobAppliedChart = () => {
+  const { appliedJobs, fetchAppliedJobs } = useContext(DashboardContext);
+  const { state } = useAuthContext(); // Get the auth state
 
-const JobAppliedChart = ({ jobData }) => {
+  useEffect(() => {
+    if (state.user && state.user.id) {
+      fetchAppliedJobs(state.user.id); // Use the logged-in userId
+    }
+  }, [fetchAppliedJobs, state.user]);
+
+  const jobData = appliedJobs.map((job) => ({
+    month: new Date(job.appliedDate).toLocaleString("default", {
+      month: "long",
+    }),
+    count: job.status === "applied" ? 1 : 0,
+  }));
+
   const data = {
     labels: jobData.length ? jobData.map((job) => job.month) : ["No Data"],
     datasets: [

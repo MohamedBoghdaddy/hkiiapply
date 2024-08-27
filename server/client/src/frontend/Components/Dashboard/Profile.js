@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DashboardContext } from "../../../context/DashboardContext";
 import "../styles/UserProfile.css";
-import { useAuthContext } from "../../../context/AuthContext";
 
 const UserProfile = () => {
   const { userData, fetchUserData, updateProfile } =
     useContext(DashboardContext);
-  const { user } = useAuthContext();
-
   const [formData, setFormData] = useState({});
   const [cvFile, setCvFile] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
@@ -15,9 +12,11 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Fetching user data for profile");
       if (!userData.userProfile) {
         await fetchUserData();
       }
+      console.log("Fetched user profile data:", userData.userProfile);
       setFormData(userData.userProfile || {});
     };
 
@@ -25,19 +24,23 @@ const UserProfile = () => {
   }, [fetchUserData, userData]);
 
   const handleInputChange = (e) => {
+    console.log("Input changed:", e.target.name, e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCvUpload = (e) => {
+    console.log("CV file selected:", e.target.files[0]);
     setCvFile(e.target.files[0]);
   };
 
   const handlePhotoUpload = (e) => {
+    console.log("Photo file selected:", e.target.files[0]);
     setPhotoFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting profile form data:", formData);
     await updateProfile(formData, cvFile, photoFile);
     setIsEditMode(false);
   };

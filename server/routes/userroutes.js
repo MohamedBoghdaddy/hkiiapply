@@ -10,6 +10,7 @@ import {
   checkAuth,
 } from "../controller/usercontroller.js";
 import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
+import profileRoutes from "./profileRoutes.js"; // Import the profile routes
 
 // Set up multer for file uploads
 const storage = multer.memoryStorage(); // You can configure the storage as needed
@@ -47,5 +48,6 @@ router.get("/dashboard", auth, authorizeRoles("admin", "user"), (req, res) => {
 
 // Check authentication status
 router.get("/checkAuth", auth, checkAuth);
+router.use("/profile", profileRoutes); // Add this line to use the profile routes
 
 export default router;

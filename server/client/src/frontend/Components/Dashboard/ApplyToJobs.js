@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/JobsDashboard.css"; // Import the merged CSS file
+import "../styles/JobsDashboard.css";
 
 const JobsDashboard = ({ userId, cvText, preferences }) => {
   const [response, setResponse] = useState(null);
@@ -16,7 +16,7 @@ const JobsDashboard = ({ userId, cvText, preferences }) => {
         preferences: preferences,
       });
       setResponse(result.data);
-      // Optionally, you can add the newly applied job to the job history list
+      // Store job application history in local state
       setJobHistory([...jobHistory, result.data]);
     } catch (error) {
       console.error("Error applying to jobs:", error);
@@ -24,10 +24,6 @@ const JobsDashboard = ({ userId, cvText, preferences }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSearch = () => {
-    // Implement search functionality here
   };
 
   return (
@@ -70,16 +66,9 @@ const JobsDashboard = ({ userId, cvText, preferences }) => {
         )}
       </div>
 
+      {/* Display job application history */}
       <div className="job-history">
         <h1>Job History</h1>
-        <div className="filters">
-          <input type="text" placeholder="Country" />
-          <input type="text" placeholder="Job Title" />
-          <input type="date" placeholder="From Date" />
-          <input type="date" placeholder="To Date" />
-          <button onClick={handleSearch}>Search</button>
-          <button>Reset Filter</button>
-        </div>
         <table>
           <thead>
             <tr>

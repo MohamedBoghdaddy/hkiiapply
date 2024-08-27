@@ -21,69 +21,73 @@ const DashboardProvider = ({ children }) => {
   const [formData, setFormData] = useState({});
   const [editingId, setEditingId] = useState(null);
 
+  // Fetch user data from the server
   const fetchUserData = useCallback(async () => {
-    try {
-      if (user && user._id) {
+    if (user && user._id) {
+      try {
         const response = await axios.get(
-          `http://localhost:4000/api/users/getone/${user._id}`,
-          {
-            withCredentials: true,
-          }
+          `http://localhost:4000/api/profiles/get/${user._id}`,
+          { withCredentials: true }
         );
         setUserData(response.data);
         setFormData(response.data.userProfile || {});
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        toast.error("Failed to fetch user profile data.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    } finally {
-      setLoading(false);
     }
   }, [user]);
 
+  // Automatically fetch user data when the component mounts or when the dependencies change
   useEffect(() => {
     if (isAuthenticated && user && view === "profile") {
       fetchUserData();
     }
   }, [isAuthenticated, user, view, fetchUserData]);
 
+  // Update user profile on the server
   const updateProfile = async (formData, cvFile, photoFile) => {
-    if (editingId) {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key]);
-      });
+    if (!user || !user._id) {
+      toast.error("User is not authenticated.");
+      return;
+    }
 
-      if (cvFile) {
-        formDataToSend.append("cvFile", cvFile);
-      }
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      formDataToSend.append(key, formData[key]);
+    });
 
-      if (photoFile) {
-        formDataToSend.append("photoFile", photoFile);
-      }
+    if (cvFile) {
+      formDataToSend.append("cvFile", cvFile);
+    }
 
-      try {
-        const response = await axios.put(
-          `http://localhost:4000/api/users/update/${editingId}`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        toast.success(response.data.msg, { position: "top-right" });
-        setUserData((prevData) => ({
-          ...prevData,
-          userProfile: response.data.user,
-        }));
-        setView("profile");
-      } catch (error) {
-        if (error.response && error.response.data.error) {
-          toast.error(error.response.data.error, { position: "top-right" });
-        } else {
-          console.error("Error submitting form:", error);
+    if (photoFile) {
+      formDataToSend.append("photoFile", photoFile);
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/profiles/upsert/${user._id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      }
+      );
+      toast.success("Profile updated successfully.", { position: "top-right" });
+      setUserData((prevData) => ({
+        ...prevData,
+        userProfile: response.data.profile,
+      }));
+      setView("profile");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error(error.response?.data?.error || "Failed to update profile.", {
+        position: "top-right",
+      });
     }
   };
 

@@ -8,6 +8,7 @@ import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
 import cookieParser from "cookie-parser";
 import userroutes from "./routes/userroutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import accountSettingsRoutes from "./routes/accountSettingRoutes.js";
 import analyticRoutes from "./routes/analyticRoutes.js";
@@ -16,8 +17,9 @@ import User from "./models/UserModel.js";
 import jwt from "jsonwebtoken";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawn } from "child_process"; // Add this to manage Python server
 
-//resolving dirname for es module
+// Resolving __dirname for ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -29,6 +31,7 @@ const MongoDBStore = connectMongoDBSession(session);
 const JWT_SECRET = process.env.JWT_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 const router = express.Router();
+
 // Environment variables
 const PORT = process.env.PORT || 4000;
 const MONGO_URL = process.env.MONGO_URL;
@@ -54,7 +57,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000" /* "https://iapplyhki.vercel.app"*/],
+    origin: ["http://localhost:3000"],
     credentials: true,
   })
 );
@@ -73,6 +76,7 @@ app.use(
     },
   })
 );
+
 // Connect to MongoDB
 mongoose
   .connect(MONGO_URL)
@@ -122,6 +126,7 @@ const verifyToken = (req, res, next) => {
 
 // Routes
 app.use("/api/users", userroutes);
+app.use("/api/profileRoutes", profileRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/analytics", analyticRoutes);
 app.use("/api/AccountSettings", accountSettingsRoutes);
@@ -139,18 +144,35 @@ app.get("/api/users/me", verifyToken, async (req, res) => {
 app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
+
 app.use("../netlify/functions/api.js", router);
 
-// to use the client app
+// Serve the client app
 app.use(express.static(path.join(__dirname, "./client/build")));
 
-//render client for any path
+// Render client for any path
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "./client/build/index.html"))
 );
 
+// Start the Node.js server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// Start the Python server using child_process
+const pythonProcess = spawn("python", ["./services/app.py"]);
+
+pythonProcess.stdout.on("data", (data) => {
+  console.log(`Python server output: ${data}`);
+});
+
+pythonProcess.stderr.on("data", (data) => {
+  console.error(`Python server error: ${data}`);
+});
+
+pythonProcess.on("close", (code) => {
+  console.log(`Python server process exited with code ${code}`);
 });
 
 export default app;
