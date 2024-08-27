@@ -1,9 +1,7 @@
 # Node modules
 node_modules/
 
-# Build output
-dist/
-build/
+
 
 # Logs
 logs/
@@ -17,4 +15,3 @@ server/.env
 
 .env
 services/textract
-.vercel
