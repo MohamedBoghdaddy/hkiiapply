@@ -18,7 +18,8 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { state } = useAuthContext();
 
-  const { user, isAuthenticated } = state;  const { logout } = useLogout();
+  const { user, isAuthenticated } = state;
+  const { logout } = useLogout();
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -99,8 +100,8 @@ const NavBar = () => {
               onClick={handleNavCollapse}
             >
               PRICING
-            </ScrollLink> 
-                <ScrollLink
+            </ScrollLink>
+            <ScrollLink
               to="/contact"
               className="nav-link"
               onClick={handleNavCollapse}
@@ -117,7 +118,7 @@ const NavBar = () => {
                 Dashboard
               </Nav.Link>
             )}
-       
+
             {user && (
               <div
                 className="nav-link"
