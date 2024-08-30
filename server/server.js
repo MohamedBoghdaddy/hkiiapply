@@ -17,7 +17,7 @@ import User from "./models/UserModel.js";
 import jwt from "jsonwebtoken";
 import path from "path";
 import { fileURLToPath } from "url";
-import { spawn } from "child_process"; // Add this to manage Python server
+import { spawn } from "child_process"; // To manage the Python server
 
 // Resolving __dirname for ES Module
 const __filename = fileURLToPath(import.meta.url);
@@ -30,11 +30,11 @@ const upload = multer({ dest: "uploads/" });
 const MongoDBStore = connectMongoDBSession(session);
 const JWT_SECRET = process.env.JWT_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET;
-const router = express.Router();
 
 // Environment variables
 const PORT = process.env.PORT || 4000;
 const MONGO_URL = process.env.MONGO_URL;
+
 if (!MONGO_URL) {
   console.error(
     "MongoDB connection string (MONGO_URL) is not defined in the environment variables."
@@ -57,7 +57,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000", // Adjusting CORS for deployment
     credentials: true,
   })
 );
@@ -65,7 +65,7 @@ app.use(
 // Configure session middleware
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -100,9 +100,9 @@ const createToken = (_id, res) => {
   });
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
   });
 
   return token;
@@ -126,11 +126,11 @@ const verifyToken = (req, res, next) => {
 
 // Routes
 app.use("/api/users", userroutes);
-app.use("/api/profileRoutes", profileRoutes);
+app.use("/api/profile", profileRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/analytics", analyticRoutes);
-app.use("/api/AccountSettings", accountSettingsRoutes);
-app.use("/api", employeeRoutes);
+app.use("/api/account-settings", accountSettingsRoutes);
+app.use("/api/employees", employeeRoutes);
 
 app.get("/api/users/me", verifyToken, async (req, res) => {
   try {
@@ -144,8 +144,6 @@ app.get("/api/users/me", verifyToken, async (req, res) => {
 app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
-
-app.use("../netlify/functions/api.js", router);
 
 // Serve the client app
 app.use(express.static(path.join(__dirname, "./client/build")));
