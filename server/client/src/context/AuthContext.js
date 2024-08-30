@@ -7,6 +7,9 @@ import React, {
 } from "react";
 import axios from "axios";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
+
 const AuthContext = createContext();
 
 const initialState = {
@@ -52,7 +55,9 @@ export const AuthProvider = ({ children }) => {
 
       if (token && !state.isAuthenticated) {
         const response = await axios.get(
-          "http://localhost:4000/api/users/checkAuth",
+          `${
+            process.env.NODE_ENV === "production" ? apiUrl : localUrl
+          }/api/users/checkAuth`,
           {
             withCredentials: true,
           }

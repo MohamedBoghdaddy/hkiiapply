@@ -9,6 +9,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
+
 export const EmployeeContext = createContext();
 
 const EmployeeProvider = ({ children }) => {
@@ -32,9 +35,14 @@ const EmployeeProvider = ({ children }) => {
   const fetchEmployeeList = useCallback(async () => {
     if (user && user.role === "admin") {
       try {
-        const response = await axios.get("http://localhost:4000/api/getall", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${
+            process.env.NODE_ENV === "production" ? apiUrl : localUrl
+          }/api/getall`,
+          {
+            withCredentials: true,
+          }
+        );
         setEmployeeList(response.data);
       } catch (error) {
         console.error("Error fetching employee list:", error);
@@ -47,7 +55,9 @@ const EmployeeProvider = ({ children }) => {
       if (isAuthenticated && user && user.role === "admin") {
         try {
           const response = await axios.get(
-            `http://localhost:4000/api/getone/${employeeId}`,
+            `${
+              process.env.NODE_ENV === "production" ? apiUrl : localUrl
+            }/api/getone/${employeeId}`,
             { withCredentials: true }
           );
           setEmployee(response.data);
@@ -72,7 +82,9 @@ const EmployeeProvider = ({ children }) => {
         if (isAuthenticated && user && user.role === "admin") {
           try {
             await axios.delete(
-              `http://localhost:4000/api/delete/${employeeId}`,
+              `${
+                process.env.NODE_ENV === "production" ? apiUrl : localUrl
+              }/api/delete/${employeeId}`,
               {
                 withCredentials: true,
               }
@@ -114,7 +126,9 @@ const EmployeeProvider = ({ children }) => {
           try {
             if (editingId) {
               const response = await axios.put(
-                `http://localhost:4000/api/update/${editingId}`,
+                `${
+                  process.env.NODE_ENV === "production" ? apiUrl : localUrl
+                }/api/update/${editingId}`,
                 employee,
                 { withCredentials: true }
               );
@@ -122,7 +136,9 @@ const EmployeeProvider = ({ children }) => {
               setView("list");
             } else {
               const response = await axios.post(
-                "http://localhost:4000/api/create",
+                `${
+                  process.env.NODE_ENV === "production" ? apiUrl : localUrl
+                }/api/create`,
                 employee,
                 { withCredentials: true }
               );

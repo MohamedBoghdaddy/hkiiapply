@@ -1,7 +1,10 @@
 import { useCallback } from "react";
 import axios from "axios";
 import { useAuthContext } from "../context/AuthContext";
-import { deleteCookie } from "../utils/cookieUtils"; // Import your cookie utility
+import { deleteCookie } from "../utils/cookieUtils";
+
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
 
 export const useLogout = () => {
   const { dispatch } = useAuthContext();
@@ -9,12 +12,14 @@ export const useLogout = () => {
   const logout = useCallback(async () => {
     try {
       await axios.post(
-        "http://localhost:4000/api/users/logout",
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/users/logout`,
         {},
-        { withCredentials: true } // Ensure cookies are sent
+        { withCredentials: true }
       );
 
-      dispatch({ type: "LOGOUT_SUCCESS" }); // Update the action type to match your reducer
+      dispatch({ type: "LOGOUT_SUCCESS" });
 
       // Clear cookies
       deleteCookie("username");

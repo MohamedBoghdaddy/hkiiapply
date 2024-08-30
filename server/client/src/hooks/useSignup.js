@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { useAuthContext } from "../context/AuthContext"; // Adjust path if necessary
+import { useAuthContext } from "../context/AuthContext";
 import axios from "axios";
+
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
 
 export const useSignup = () => {
   const [username, setUsername] = useState("");
@@ -22,16 +25,17 @@ export const useSignup = () => {
     setSuccessMessage("");
 
     try {
-    
       const response = await axios.post(
-        "http://localhost:4000/api/users/signup",
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/users/signup`,
         {
           username,
           email,
           password,
           gender,
         },
-        { withCredentials: true } // Ensure cookies are sent
+        { withCredentials: true }
       );
 
       setSuccessMessage("Registration successful");

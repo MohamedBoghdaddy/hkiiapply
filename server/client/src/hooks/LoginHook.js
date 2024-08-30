@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { useAuthContext } from "../context/AuthContext"; // Adjust path if necessary
+import { useAuthContext } from "../context/AuthContext";
 import axios from "axios";
-import { setCookie } from "../utils/cookieUtils"; // Import your cookie utility
+import { setCookie } from "../utils/cookieUtils";
+
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
 
 export const useLogin = (onLoginSuccess) => {
   const [email, setEmail] = useState("");
@@ -20,7 +23,9 @@ export const useLogin = (onLoginSuccess) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/users/login",
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/users/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -29,23 +34,23 @@ export const useLogin = (onLoginSuccess) => {
 
       localStorage.setItem("user", JSON.stringify({ token, user }));
 
-    if (token && user) {
-      dispatch({ type: "LOGIN_SUCCESS", payload: user || {} });
-      setSuccessMessage("Login successful");
-      onLoginSuccess();
+      if (token && user) {
+        dispatch({ type: "LOGIN_SUCCESS", payload: user || {} });
+        setSuccessMessage("Login successful");
+        onLoginSuccess();
 
-      // Set cookies
-      setCookie("token", token);
+        // Set cookies
+        setCookie("token", token);
 
-      if (user) {
-        setCookie("username", user.username);
-        setCookie("email", user.email);
-        setCookie("userId", user._id);
+        if (user) {
+          setCookie("username", user.username);
+          setCookie("email", user.email);
+          setCookie("userId", user._id);
+        }
+      } else {
+        console.error("Unexpected response format:", response.data);
+        throw new Error("Invalid response data");
       }
-    } else {
-      console.error("Unexpected response format:", response.data);
-      throw new Error("Invalid response data");
-    }
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage(error.response?.data?.message || "Login failed");

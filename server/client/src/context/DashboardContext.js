@@ -3,6 +3,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+const localUrl = "http://localhost:4000";
+
 export const DashboardContext = createContext();
 
 const DashboardProvider = ({ children }) => {
@@ -26,7 +29,9 @@ const DashboardProvider = ({ children }) => {
     if (user && user._id) {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/profiles/get/${user._id}`,
+          `${
+            process.env.NODE_ENV === "production" ? apiUrl : localUrl
+          }/api/profiles/get/${user._id}`,
           { withCredentials: true }
         );
         setUserData(response.data);
@@ -69,7 +74,9 @@ const DashboardProvider = ({ children }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/profiles/upsert/${user._id}`,
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/profiles/upsert/${user._id}`,
         formDataToSend,
         {
           headers: {
