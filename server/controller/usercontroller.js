@@ -40,22 +40,20 @@ export const register = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const uid = uuidv4(); // Generate a unique UID
     const user = new User({
       username,
       email,
       password: hashedPassword,
       role,
-      UID: uid,
     });
     await user.save();
 
-    const profile = new Profile({ userId: user._id, UID: uid });
+    const profile = new Profile({ userId: user._id });
     await profile.save();
 
     const token = createToken(user);
 
-    res.status(201).json({ token, user: { username, email, role, UID: uid } });
+    res.status(201).json({ token, user: { username, email, role} });
   } catch (error) {
     res.status(500).json({ message: "Registration failed", error });
   }
