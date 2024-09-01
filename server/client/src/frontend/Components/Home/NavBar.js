@@ -108,7 +108,7 @@ const NavBar = () => {
             >
               Contact Us
             </ScrollLink>
-            {user && (
+            {isAuthenticated && user && (
               <Nav.Link
                 as={Link}
                 to="/dashboard"
@@ -119,7 +119,7 @@ const NavBar = () => {
               </Nav.Link>
             )}
 
-            {user && (
+            {isAuthenticated && user ? (
               <div
                 className="nav-link"
                 role="button"
@@ -133,8 +133,7 @@ const NavBar = () => {
               >
                 <FontAwesomeIcon icon={faSignOutAlt} /> Logout
               </div>
-            )}
-            {!user && (
+            ) : (
               <div
                 className="nav-link"
                 role="button"
