@@ -4,9 +4,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./context/AuthContext";
 import DashboardProvider from "./context/DashboardContext";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { BrowserRouter as Router } from "react-router-dom";
 import EmployeeProvider from "./context/EmployeeContext";
 // import AdminDashboardProvider from "./context/AdminDashboardContext";
 
