@@ -4,6 +4,9 @@ from nltk.corpus import stopwords
 from nltk import pos_tag, ne_chunk
 from nltk.probability import FreqDist
 import spacy
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Load the spaCy model for NER and NLP
 nlp = spacy.load('en_core_web_md')
