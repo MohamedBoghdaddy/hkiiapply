@@ -9,7 +9,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import pymongo
 import os
 import time
+from dotenv import load_dotenv
 
+load_dotenv()
 MONGO_URL = os.getenv('MONGO_URL')
 client = pymongo.MongoClient(MONGO_URL)
 db = client['job_scraping']

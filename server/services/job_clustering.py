@@ -2,6 +2,10 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import silhouette_score
 from sklearn.decomposition import TruncatedSVD
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 def fetch_jobs(preferences):
     """

@@ -1,19 +1,19 @@
 import requests
 import os
-# import logging
-# import traceback
 import numpy as np
 from cv_analysis import analyze_cv
 from job_clustering import fetch_jobs, cluster_jobs
 from sklearn.metrics.pairwise import cosine_similarity
+from dotenv import load_dotenv
 
+load_dotenv()
 class JobApplication:
     def __init__(self, user_id, cv_text, preferences):
         self.user_id = user_id
         self.cv_text = cv_text
         self.preferences = preferences
 
-    def apply_to_jobs(self):
+    def apply_to_jobs(self, api_key):
         try:
             # Analyze the CV text for skills, entities, and other features
             analysis_result = analyze_cv(self.cv_text)
@@ -24,7 +24,7 @@ class JobApplication:
             clustered_jobs = self.enhanced_cluster_jobs(jobs, skills)
 
             # Apply to jobs using an external API
-            response = self.apply_to_jobs_api(clustered_jobs)
+            response = self.apply_to_jobs_api(clustered_jobs, api_key)
             return response
         except Exception as e:
             raise Exception(f"Error in apply_to_jobs: {e}")
@@ -57,13 +57,13 @@ class JobApplication:
         except Exception as e:
             raise Exception(f"Error in vectorize_text: {e}")
 
-    def apply_to_jobs_api(self, clustered_jobs):
+    def apply_to_jobs_api(self, clustered_jobs, api_key):
         try:
             response = requests.post(
                 "http://localhost:5000/api/apply-jobs",
                 json={"userId": self.user_id, "jobs": clustered_jobs},
                 headers={
-                    "Authorization": f"Bearer {os.getenv('ANTHROPICS_API_KEY')}",
+                    "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json"
                 },
             )
@@ -71,4 +71,3 @@ class JobApplication:
             return response.json()
         except requests.exceptions.RequestException as e:
             raise Exception(f"Error applying to jobs via API: {e}")
-

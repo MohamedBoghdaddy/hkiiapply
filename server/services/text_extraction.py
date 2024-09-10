@@ -3,7 +3,9 @@ from docx import Document
 from pdfminer.high_level import extract_text as extract_pdf_text
 from pdfminer.pdfparser import PDFSyntaxError
 import logging
+from dotenv import load_dotenv
 
+load_dotenv()
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
