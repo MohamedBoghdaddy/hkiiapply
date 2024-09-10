@@ -231,3 +231,29 @@ export const deleteCv = async (req, res) => {
     res.status(500).json({ message: "CV deletion failed", error });
   }
 };
+// Preview CV
+export const previewCv = async (req, res) => {
+  console.log(
+    "GET /profile/previewCv/:userId - Received request with params:",
+    req.params
+  );
+
+  try {
+    const user = await User.findById(req.params.userId);
+
+    if (!user || !user.cvFilePath) {
+      return res.status(404).json({ message: "CV not found" });
+    }
+
+    // Check if the logged-in user has permission to preview this CV
+    if (user._id.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access to preview CV" });
+    }
+
+    console.log("Previewing CV file from path:", user.cvFilePath);
+    res.status(200).json({ cvUrl: `/uploads/cvs/${user.cvFileName}` });
+  } catch (error) {
+    console.error("Error previewing CV:", error);
+    res.status(500).json({ message: "CV preview failed", error });
+  }
+};

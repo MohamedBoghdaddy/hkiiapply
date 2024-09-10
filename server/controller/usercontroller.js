@@ -53,7 +53,7 @@ export const register = async (req, res) => {
 
     const token = createToken(user);
 
-    res.status(201).json({ token, user: { username, email, role} });
+    res.status(201).json({ token, user: { username, email, role } });
   } catch (error) {
     res.status(500).json({ message: "Registration failed", error });
   }
@@ -190,6 +190,64 @@ export const checkAuth = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Upload CV
+export const uploadCv = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (req.file) {
+      user.cvFileName = req.file.filename; // Assuming you're storing the file name in the user model
+      await user.save();
+    }
+
+    res
+      .status(200)
+      .json({
+        message: "CV uploaded successfully",
+        cvFileName: user.cvFileName,
+      });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Download CV
+export const downloadCv = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user || !user.cvFileName) {
+      return res.status(404).json({ message: "CV not found" });
+    }
+
+    const filePath = path.join(__dirname, "../uploads", user.cvFileName);
+    res.download(filePath); // Sends the file as a download
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete CV
+export const deleteCv = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.cvFileName = null; // Clear the CV reference in the database
+    await user.save();
+
+    res.status(200).json({ message: "CV deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
