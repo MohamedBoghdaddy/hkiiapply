@@ -1,10 +1,9 @@
 import React from "react";
 import "../../styles/login.css"; // Adjust the path as needed
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../../../../hooks/LoginHook";
 
-
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
   const {
     email,
     setEmail,
@@ -16,7 +15,8 @@ const Login = ({ onLoginSuccess }) => {
     successMessage,
     isLoading,
     handleLogin,
-  } = useLogin(onLoginSuccess);
+  } = useLogin();
+
   return (
     <div className="main-container">
       <div className="login-container">
@@ -52,7 +52,7 @@ const Login = ({ onLoginSuccess }) => {
                 >
                   <i
                     className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}
-                  ></i>{" "}
+                  ></i>
                 </button>
               </div>
             </div>

@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import Profile from "../models/ProfileModel.js";
 import User from "../models/UserModel.js";
 
 // Fix __dirname issue in ES module
@@ -19,44 +18,43 @@ if (!fs.existsSync(photoDirectory)) {
   fs.mkdirSync(photoDirectory, { recursive: true });
 }
 
-// Get profile by UID
+// Get user profile by userId
 export const getProfile = async (req, res) => {
   console.log(
-    "GET /profile/get/:UID - Received request with params:",
+    "GET /profile/get/:userId - Received request with params:",
     req.params
   );
 
   try {
-    const { UID } = req.params;
-    const profile = await Profile.findOne({ UID }).populate(
-      "userId",
-      "username email"
+    const { userId } = req.params;
+    const user = await User.findById(userId).select(
+      "username email cvFileName photoUrl"
     );
 
-    if (!profile) {
-      console.log("Profile not found for UID:", UID);
-      return res.status(404).json({ message: "Profile not found" });
+    if (!user) {
+      console.log("User not found for userId:", userId);
+      return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("Profile found:", profile);
-    res.status(200).json(profile);
+    console.log("User found:", user);
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching profile:", error);
+    console.error("Error fetching user profile:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// Create or update profile by UID
+// Update user profile (including CV and photo)
 export const upsertProfile = async (req, res) => {
   console.log(
-    "PUT /profile/upsert/:UID - Received request with params:",
+    "PUT /profile/upsert/:userId - Received request with params:",
     req.params
   );
   console.log("Request body:", req.body);
   console.log("Uploaded files:", req.files);
 
   try {
-    const { UID } = req.params;
+    const { userId } = req.params;
     const updates = { ...req.body };
 
     // Handle file uploads
@@ -79,59 +77,66 @@ export const upsertProfile = async (req, res) => {
       }
     }
 
-    console.log("Profile updates:", updates);
+    console.log("User profile updates:", updates);
 
-    // Upsert profile
-    const profile = await Profile.findOneAndUpdate(
-      { UID },
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
       { $set: updates },
-      { new: true, upsert: true }
-    );
+      { new: true }
+    ).select("-password");
 
-    console.log("Profile upserted successfully:", profile);
-    res.status(200).json({ message: "Profile updated successfully", profile });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("User updated successfully:", updatedUser);
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
-    console.error("Error updating profile:", error);
+    console.error("Error updating user profile:", error);
     res
       .status(500)
-      .json({ message: "Error updating profile", error: error.message });
+      .json({ message: "Error updating user profile", error: error.message });
   }
 };
 
-// Delete profile by UID
+// Delete user profile
 export const deleteProfile = async (req, res) => {
   console.log(
-    "DELETE /profile/delete/:UID - Received request with params:",
+    "DELETE /profile/delete/:userId - Received request with params:",
     req.params
   );
 
   try {
-    const { UID } = req.params;
-    const profile = await Profile.findOneAndDelete({ UID });
-    if (!profile) {
-      console.log("Profile not found for UID:", UID);
-      return res.status(404).json({ message: "Profile not found" });
+    const { userId } = req.params;
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      console.log("User not found for userId:", userId);
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Optionally, delete the CV file from the filesystem
-    if (profile.cvFilePath && fs.existsSync(profile.cvFilePath)) {
-      console.log("Deleting CV file from path:", profile.cvFilePath);
-      fs.unlinkSync(profile.cvFilePath);
+    if (user.cvFilePath && fs.existsSync(user.cvFilePath)) {
+      console.log("Deleting CV file from path:", user.cvFilePath);
+      fs.unlinkSync(user.cvFilePath);
     }
 
-    res.status(200).json({ message: "Profile deleted successfully" });
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("Error deleting profile:", error);
+    console.error("Error deleting user:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// Upload CV by UID
+// Upload CV
 export const uploadCv = async (req, res) => {
   console.log("POST /profile/uploadCv - Received request with file:", req.file);
 
   try {
-    const { UID } = req.params;
+    const { userId } = req.params;
     const file = req.file;
     const filePath = path.join(
       cvDirectory,
@@ -142,16 +147,20 @@ export const uploadCv = async (req, res) => {
     console.log("Moving CV file to:", filePath);
     fs.renameSync(file.path, filePath);
 
-    const profile = await Profile.findOneAndUpdate(
-      { UID },
+    const user = await User.findByIdAndUpdate(
+      userId,
       { cvFileName: file.originalname, cvFilePath: filePath },
-      { new: true, upsert: true }
+      { new: true }
     );
 
-    console.log("CV uploaded and profile updated:", profile);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("CV uploaded and user updated:", user);
     res.status(200).json({
       message: "CV uploaded successfully",
-      profile,
+      user,
     });
   } catch (error) {
     console.error("Error uploading CV:", error);
@@ -159,115 +168,66 @@ export const uploadCv = async (req, res) => {
   }
 };
 
-// Download CV by UID
+// Download CV
 export const downloadCv = async (req, res) => {
   console.log(
-    "GET /profile/downloadCv/:UID - Received request with params:",
+    "GET /profile/downloadCv/:userId - Received request with params:",
     req.params
   );
 
   try {
-    const profile = await Profile.findOne({ UID: req.params.UID });
+    const user = await User.findById(req.params.userId);
 
-    if (!profile || !profile.cvFilePath) {
-      console.log("CV not found for UID:", req.params.UID);
+    if (!user || !user.cvFilePath) {
+      console.log("CV not found for userId:", req.params.userId);
       return res.status(404).json({ message: "CV not found" });
     }
 
-    // Add authorization check to ensure the user owns the CV
-    if (profile.userId.toString() !== req.user.id) {
-      console.log(
-        "User does not have permission to access this CV:",
-        req.user.id
-      );
-      return res.status(403).json({
-        message: "You do not have permission to access this CV",
-      });
+    // Check if the logged-in user has permission to access this CV
+    if (user._id.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access to CV" });
     }
 
-    console.log("Sending CV file for download:", profile.cvFilePath);
-    res.download(profile.cvFilePath, profile.cvFileName);
+    console.log("Sending CV file for download:", user.cvFilePath);
+    res.download(user.cvFilePath, user.cvFileName);
   } catch (error) {
     console.error("Error downloading CV:", error);
     res.status(500).json({ message: "CV download failed", error });
   }
 };
 
-// Delete CV by UID
+// Delete CV
 export const deleteCv = async (req, res) => {
   console.log(
-    "DELETE /profile/deleteCv/:UID - Received request with params:",
+    "DELETE /profile/deleteCv/:userId - Received request with params:",
     req.params
   );
 
   try {
-    const profile = await Profile.findOne({ UID: req.params.UID });
+    const user = await User.findById(req.params.userId);
 
-    if (!profile || !profile.cvFilePath) {
-      console.log("CV not found for UID:", req.params.UID);
+    if (!user || !user.cvFilePath) {
       return res.status(404).json({ message: "CV not found" });
     }
 
-    // Add authorization check to ensure the user owns the CV
-    if (profile.userId.toString() !== req.user.id) {
-      console.log(
-        "User does not have permission to delete this CV:",
-        req.user.id
-      );
-      return res.status(403).json({
-        message: "You do not have permission to delete this CV",
-      });
+    // Check if the logged-in user has permission to delete this CV
+    if (user._id.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized access to delete CV" });
     }
 
-    console.log("Deleting CV file from path:", profile.cvFilePath);
-    fs.unlinkSync(profile.cvFilePath);
+    console.log("Deleting CV file from path:", user.cvFilePath);
+    fs.unlinkSync(user.cvFilePath);
 
-    // Clear the CV information from the profile
-    profile.cvFileName = undefined;
-    profile.cvFilePath = undefined;
-    await profile.save();
+    // Clear the CV information from the user profile
+    user.cvFileName = undefined;
+    user.cvFilePath = undefined;
+    await user.save();
 
-    console.log("CV deleted and profile updated:", profile);
     res.status(200).json({ message: "CV deleted successfully" });
   } catch (error) {
     console.error("Error deleting CV:", error);
     res.status(500).json({ message: "CV deletion failed", error });
-  }
-};
-
-// Preview CV by UID
-export const previewCv = async (req, res) => {
-  console.log(
-    "GET /profile/previewCv/:UID - Received request with params:",
-    req.params
-  );
-
-  try {
-    const profile = await Profile.findOne({ UID: req.params.UID });
-
-    if (!profile || !profile.cvFilePath) {
-      console.log("CV not found for UID:", req.params.UID);
-      return res.status(404).json({ message: "CV not found" });
-    }
-
-    if (profile.userId.toString() !== req.user.id) {
-      console.log(
-        "User does not have permission to preview this CV:",
-        req.user.id
-      );
-      return res.status(403).json({
-        message: "You do not have permission to preview this CV",
-      });
-    }
-
-    // Read the file and return it as a base64 encoded string
-    console.log("Reading CV file for preview:", profile.cvFilePath);
-    const base64Data = fs.readFileSync(profile.cvFilePath, {
-      encoding: "base64",
-    });
-    res.json({ base64: base64Data });
-  } catch (error) {
-    console.error("Error previewing CV:", error);
-    res.status(500).json({ message: "CV preview failed", error });
   }
 };

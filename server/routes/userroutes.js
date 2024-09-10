@@ -8,12 +8,14 @@ import {
   updateUser,
   deleteUser,
   checkAuth,
+  uploadCv,
+  downloadCv,
+  deleteCv,
 } from "../controller/usercontroller.js";
 import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
-import profileRoutes from "./profileRoutes.js"; // Import the profile routes
 
 // Set up multer for file uploads
-const storage = multer.memoryStorage(); // You can configure the storage as needed
+const storage = multer.memoryStorage(); // Configure the storage as needed
 const upload = multer({ storage });
 
 const router = express.Router();
@@ -36,6 +38,11 @@ router.put(
 );
 router.delete("/:userId", auth, deleteUser);
 
+// CV routes
+router.post("/uploadCv/:userId", auth, upload.single("cvFile"), uploadCv);
+router.get("/downloadCv/:userId", auth, downloadCv);
+router.delete("/deleteCv/:userId", auth, deleteCv);
+
 // Admin route
 router.get("/admin", auth, authorizeRoles("admin"), (req, res) => {
   res.status(200).json({ message: "Welcome, Admin!" });
@@ -48,6 +55,5 @@ router.get("/dashboard", auth, authorizeRoles("admin", "user"), (req, res) => {
 
 // Check authentication status
 router.get("/checkAuth", auth, checkAuth);
-router.use("/profile", profileRoutes); // Add this line to use the profile routes
 
 export default router;

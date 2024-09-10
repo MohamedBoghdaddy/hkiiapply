@@ -6,7 +6,7 @@ import { setCookie } from "../utils/cookieUtils";
 const apiUrl = process.env.REACT_APP_API_URL;
 const localUrl = "http://localhost:4000";
 
-export const useLogin = (onLoginSuccess) => {
+export const useLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,23 +30,26 @@ export const useLogin = (onLoginSuccess) => {
         { withCredentials: true }
       );
 
-      const { token, user } = response.data;
+      const { token, refreshToken, user } = response.data;
 
-      localStorage.setItem("user", JSON.stringify({ token, user }));
-
+      // Check if the response contains the required fields
       if (token && user) {
+        // Store user and token in local storage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ token, refreshToken, user })
+        );
+        // Dispatch login success action
         dispatch({ type: "LOGIN_SUCCESS", payload: user || {} });
+
+        // Set success message
         setSuccessMessage("Login successful");
-        onLoginSuccess();
 
         // Set cookies
         setCookie("token", token);
-
-        if (user) {
-          setCookie("username", user.username);
-          setCookie("email", user.email);
-          setCookie("userId", user._id);
-        }
+        setCookie("username", user.username);
+        setCookie("email", user.email);
+        setCookie("userId", user.id);
       } else {
         console.error("Unexpected response format:", response.data);
         throw new Error("Invalid response data");

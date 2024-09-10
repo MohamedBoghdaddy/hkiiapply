@@ -38,19 +38,19 @@ const DashboardProvider = ({ children }) => {
 
   // Fetch user data from the server
   const fetchUserData = useCallback(async () => {
-    if (user && user._id) {
+    if (user && user.id) {
       try {
         const response = await axios.get(
           `${
             process.env.NODE_ENV === "production" ? apiUrl : localUrl
-          }/api/profiles/get/${user._id}`,
+          }/api/users/getone/${user.id}`,
           { withCredentials: true }
         );
         setUserData(response.data);
-        setFormData(response.data.userProfile || {});
+        setFormData(response.data || {});
       } catch (error) {
-        console.error("Error fetching user profile:", error);
-        toast.error("Failed to fetch user profile data.");
+        console.error("Error fetching user data:", error);
+        toast.error("Failed to fetch user data.");
       } finally {
         setLoading(false);
       }
@@ -79,59 +79,93 @@ const DashboardProvider = ({ children }) => {
   };
 
   // Update user profile on the server, wrapped in useCallback
-  const updateProfile = useCallback(
-    async (formData, cvFile, photoFile) => {
-      if (!user || !user._id) {
-        toast.error("User is not authenticated.");
-        return;
-      }
+const updateProfile = useCallback(
+  async (formData, cvFile, photoFile) => {
+    if (!user || !user.id) {
+      toast.error("User is not authenticated.");
+      return;
+    }
 
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key]);
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      formDataToSend.append(key, formData[key]);
+    });
+
+    if (cvFile) {
+      formDataToSend.append("cvFile", cvFile);
+    }
+
+    if (photoFile) {
+      formDataToSend.append("photoFile", photoFile);
+    }
+
+    try {
+      // Update the profile using /api/profiles/upsert/
+      const profileResponse = await axios.put(
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/profiles/upsert/${user.id}`, // First API call to update the profile
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Profile response:", profileResponse); // Log profile response for debugging
+
+      // Update the user using /api/users/upsert/
+      const userResponse = await axios.put(
+        `${
+          process.env.NODE_ENV === "production" ? apiUrl : localUrl
+        }/api/users/upsert/${user.id}`, // Second API call to update the user
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Handle success for both requests
+      toast.success("Profile and user updated successfully.", {
+        position: "top-right",
       });
 
-      if (cvFile) {
-        formDataToSend.append("cvFile", cvFile);
-      }
+      // Update the state based on the user data returned from the API
+      setUserData((prevData) => ({
+        ...prevData,
+        userProfile: userResponse.data.user, // Updated user data
+      }));
 
-      if (photoFile) {
-        formDataToSend.append("photoFile", photoFile);
-      }
+      // Extract non-sensitive data (e.g., email, role)
+      const nonSensitiveData = {
+        firstName: userResponse.data.user.firstName,
 
-      try {
-        const response = await axios.put(
-          `${
-            process.env.NODE_ENV === "production" ? apiUrl : localUrl
-          }/api/profiles/upsert/${user._id}`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        toast.success("Profile updated successfully.", {
+        email: userResponse.data.user.email,
+        username: userResponse.data.user.username,
+        role: userResponse.data.user.role,
+      };
+
+      // Save non-sensitive data in localStorage
+      localStorage.setItem("userInfo", JSON.stringify(nonSensitiveData));
+
+      setView("profile");
+      clearNotifications(); // Clear notifications after successful update
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to update profile or user.",
+        {
           position: "top-right",
-        });
-        setUserData((prevData) => ({
-          ...prevData,
-          userProfile: response.data.profile,
-        }));
-        setView("profile");
-        clearNotifications(); // Clear notifications after successful update
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        toast.error(
-          error.response?.data?.error || "Failed to update profile.",
-          {
-            position: "top-right",
-          }
-        );
-      }
-    },
-    [user]
-  );
+        }
+      );
+    }
+  },
+  [user]
+);
+
 
   // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
@@ -148,7 +182,8 @@ const DashboardProvider = ({ children }) => {
       updateProfile,
       handleInputChange, // Adding the input handler to the context
       fetchUserData,
-      clearNotifications, // Adding the clearNotifications to the context
+      clearNotifications,
+      // Adding the clearNotifications to the context
     }),
     [
       view,
