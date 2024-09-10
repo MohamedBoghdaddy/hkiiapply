@@ -7,6 +7,13 @@ from text_extraction import extract_text
 from cv_analysis import analyze_cv
 from job_clustering import fetch_jobs, cluster_jobs
 from profile_matching import match_profile_to_job
+import spacy
+import nltk
+
+nltk.download('punkt')
+
+nlp = spacy.load("en_core_web_md")
+
 
 # Initialize logging
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')

@@ -36,6 +36,7 @@
     "react-table": "^7.8.0",
     "swagger-ui-express": "^5.0.1",
     "textract": "^2.5.0",
+    "uuid": "^10.0.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
