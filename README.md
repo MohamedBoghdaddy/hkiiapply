@@ -1,4 +1,4 @@
-=# HKI IApply 🤖
+# HKI IApply 🤖
 
 ![Build](https://img.shields.io/github/actions/workflow/status/MohamedBoghdaddy/hkiiapply/ci.yml)
 ![License](https://img.shields.io/github/license/MohamedBoghdaddy/hkiiapply)
